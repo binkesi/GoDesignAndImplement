@@ -10,6 +10,9 @@ func TestPipeline(t *testing.T) {
 	for num := range sq(sq(gen(2, 3, 4))) {
 		fmt.Println(num)
 	}
+	for num := range sq(sq(gen2(2, 3, 4))) {
+		fmt.Println(num)
+	}
 }
 
 func TestMergePipeline(t *testing.T) {
@@ -30,6 +33,16 @@ func gen(nums ...int) chan int {
 		}
 		close(out)
 	}()
+	return out
+}
+
+// When the number of values to be sent is known at channel creation time, a buffer can simplify the code.
+func gen2(nums ...int) chan int {
+	out := make(chan int, len(nums))
+	for _, num := range nums {
+		out <- num
+	}
+	close(out)
 	return out
 }
 
